@@ -46,11 +46,11 @@ const ExpenseList = () => {
           type="number"
           min={0}
           placeholder="金額"
-          value={inputExpense.amount || ""}
+          value={inputExpense.amount.toString() || ""}
           onChange={(e) =>
             updateInputExpense({
               ...inputExpense,
-              amount: e.target.valueAsNumber,
+              amount: BigInt(e.target.value || "0"),
             })
           }
           className="h-10 px-2 border border-gray-300 rounded"

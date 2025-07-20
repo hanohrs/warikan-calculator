@@ -23,7 +23,7 @@ type Action = {
 const useWarikanStore = create<State & Action>((set) => ({
   // initial state
   inputMember: "",
-  inputExpense: { paidBy: "", description: "", amount: 0 },
+  inputExpense: { paidBy: "", description: "", amount: 0n },
   members: new Set<string>(),
   expenses: [],
   // actions
@@ -57,7 +57,7 @@ const useWarikanStore = create<State & Action>((set) => ({
             ...state.expenses,
             { ...state.inputExpense, description: trimmedDescription },
           ],
-          inputExpense: { paidBy: "", description: "", amount: 0 },
+          inputExpense: { paidBy: "", description: "", amount: 0n },
         };
       }
       return state;
