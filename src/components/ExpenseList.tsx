@@ -62,16 +62,16 @@ const ExpenseList = () => {
  
       {/* 支払い一覧 */}
       <div className="space-y-2">
-        {expenses.map((expense) => (
+        {expenses.map((expense, i) => (
           <div
-            key={expense.description}
+            key={i}
             className="flex justify-between items-center p-2 bg-gray-50 rounded"
           >
             <span>
               {expense.paidBy}が{expense.description}で{expense.amount}
               円支払い
             </span>
-            <Button onClick={() => removeExpense(expense.description)}>
+            <Button onClick={() => removeExpense(i)}>
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>

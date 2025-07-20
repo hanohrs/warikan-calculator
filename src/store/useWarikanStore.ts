@@ -17,7 +17,7 @@ type Action = {
   updateInputExpense: (inputExpense: Expense) => void;
   addMember: () => void;
   addExpense: () => void;
-  removeExpense: (description: string) => void;
+  removeExpense: (index: number) => void;
 };
 
 const useWarikanStore = create<State & Action>((set) => ({
@@ -50,12 +50,8 @@ const useWarikanStore = create<State & Action>((set) => ({
       // 支払い内容のトリミング
       const { paidBy, description, amount } = state.inputExpense;
       const trimmedDescription = description.trim();
-      // 重複の確認
-      const isDuplicateDescription = state.expenses.some(
-        (expense) => expense.description === trimmedDescription
-      );
       // バリデーション
-      if (paidBy && trimmedDescription && amount && !isDuplicateDescription) {
+      if (paidBy && trimmedDescription && amount) {
         return {
           expenses: [
             ...state.expenses,
@@ -66,12 +62,10 @@ const useWarikanStore = create<State & Action>((set) => ({
       }
       return state;
     }),
-  removeExpense: (description: string) =>
+  removeExpense: (index: number) =>
     set((state) => {
       return {
-        expenses: state.expenses.filter(
-          (expense) => expense.description !== description
-        ),
+        expenses: state.expenses.filter((_, i) => i !== index),
       };
     }),
 }));
