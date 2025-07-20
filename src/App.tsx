@@ -1,3 +1,4 @@
+import ExpenseList from "./components/ExpenseList";
 import MemberList from "./components/MemberList";
  
 function App() {
@@ -15,7 +16,7 @@ function App() {
         </div>
         <div className="flex space-x-8 justify-center">
           <MemberList />
-          {/* ExpenseList */}
+          <ExpenseList />
           {/* Result */}
         </div>
       </div>
