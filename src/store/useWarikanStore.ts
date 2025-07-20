@@ -7,7 +7,7 @@ import type { Expense } from "../types";
 type State = {
   inputMember: string;
   inputExpense: Expense;
-  members: string[];
+  members: Set<string>;
   expenses: Expense[];
 };
 
@@ -24,7 +24,7 @@ const useWarikanStore = create<State & Action>((set) => ({
   // initial state
   inputMember: "",
   inputExpense: { paidBy: "", description: "", amount: 0 },
-  members: [],
+  members: new Set<string>(),
   expenses: [],
   // actions
   updateInputMember: (inputMember: string) =>
@@ -33,14 +33,13 @@ const useWarikanStore = create<State & Action>((set) => ({
     set(() => ({ inputExpense: inputExpense })),
   addMember: () =>
     set((state) => {
-      // 空白のトリミング
       const trimmedMember = state.inputMember.trim();
       // 重複の確認
-      const isDuplicateMember = state.members.includes(trimmedMember);
+      const isDuplicateMember = state.members.has(trimmedMember);
       // バリデーション
       if (trimmedMember && !isDuplicateMember) {
         return {
-          members: [...state.members, trimmedMember],
+          members: new Set(state.members).add(trimmedMember),
           inputMember: "",
         };
       }

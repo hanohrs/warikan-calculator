@@ -6,7 +6,10 @@ type MemberCalculation = {
 };
 
 // 各メンバーが支払った個人総額を算出
-const calculateTotalPaidByMember = (members: string[], expenses: Expense[]) => {
+const calculateTotalPaidByMember = (
+  members: Set<string>,
+  expenses: Expense[]
+) => {
   const totalPaidByMember: MemberCalculation = {};
 
   members.forEach((member) => (totalPaidByMember[member] = 0));
@@ -23,13 +26,13 @@ const calculateTotal = (totalPaidByMember: MemberCalculation) => {
 };
 
 // １人あたりが本来支払うべき金額（割り勘）を算出
-const calculateTotalPerMember = (total: number, members: string[]) => {
-  return total / members.length;
+const calculateTotalPerMember = (total: number, members: Set<string>) => {
+  return total / members.size;
 };
 
 // それぞれのメンバーの過払い額 or 不足額を算出
 const calculateDifferences = (
-  members: string[], // メンバー名の配列
+  members: Set<string>, // メンバー名の Set
   totalPaidByMember: MemberCalculation, // 各メンバーが支払った個人総額
   totalPerMember: number // １人あたりが本来支払うべき金額（割り勘額）
 ) => {
@@ -101,7 +104,7 @@ const useResultLogic = () => {
   const members = useWarikanStore((state) => state.members);
   const expenses = useWarikanStore((state) => state.expenses);
 
-  if (members.length === 0 || expenses.length === 0) {
+  if (members.size === 0 || expenses.length === 0) {
     return [];
   }
 
