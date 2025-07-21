@@ -21,21 +21,38 @@ const calculateTotal = (totalPaidByMember: MemberCalculation) => {
 };
 
 // １人あたりが本来支払うべき金額（割り勘）を算出
-const calculateTotalPerMember = (total: bigint, members: Set<string>) => {
-  return total / BigInt(members.size);
+const calculateTotalPerMember = (total: bigint, members: Set<string>): MemberCalculation => {
+  const memberCount = BigInt(members.size);
+  const baseAmount = total / memberCount;
+  const remainder = total % memberCount;
+
+  // 各メンバーが支払うべき金額を格納するMap
+  const totalPerMemberMap = new Map<string, bigint>();
+
+  // メンバーを配列に変換（余りの分配用）
+  const membersArray = Array.from(members);
+
+  // 各メンバーの支払額を計算
+  membersArray.forEach((member, index) => {
+    // 余りを公平に分配するため、余りの数だけ1円追加
+    const extraAmount = index < Number(remainder) ? 1n : 0n;
+    totalPerMemberMap.set(member, baseAmount + extraAmount);
+  });
+
+  return totalPerMemberMap;
 };
 
 // それぞれのメンバーの過払い額 or 不足額を算出
 const calculateDifferences = (
   members: Set<string>, // メンバー名の Set
   totalPaidByMember: MemberCalculation, // 各メンバーが支払った個人総額
-  totalPerMember: bigint // １人あたりが本来支払うべき金額（割り勘額）
+  totalPerMember: MemberCalculation // １人あたりが本来支払うべき金額（割り勘額）
 ) => {
   const differences: MemberCalculation = new Map(); // メンバーごとの過不足を格納するオブジェクト
   members.forEach((member) => {
     differences.set(
       member,
-      (totalPaidByMember.get(member) || 0n) - totalPerMember
+      (totalPaidByMember.get(member) || 0n) - (totalPerMember.get(member) || 0n)
     ); // 支払った金額 - 支払うべき金額
   });
   return differences;
