@@ -30,7 +30,7 @@ const MemberList = () => {
         </Button>
       </form>
       <div className="flex gap-2">
-        {members.values().map((member) => (
+        {Array.from(members).map((member) => (
           <div key={member} className="px-3 py-1 bg-blue-100 rounded-full">
             {member}
           </div>

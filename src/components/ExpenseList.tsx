@@ -31,7 +31,7 @@ const ExpenseList = () => {
           ref={selectRef}
         >
           <option value="">支払った人</option>
-          {members.values().map(
+          {Array.from(members).map(
             (member) =>
               member && (
                 <option key={member} value={member}>
