@@ -2,7 +2,8 @@ import useWarikanStore from "../store/useWarikanStore";
 import Card from "./ui/Card";
 import Button from "./ui/Button";
 import { Trash2 } from "lucide-react";
- 
+import { useRef } from "react";
+
 const ExpenseList = () => {
   const members = useWarikanStore((state) => state.members);
   const expenses = useWarikanStore((state) => state.expenses);
@@ -12,54 +13,61 @@ const ExpenseList = () => {
   );
   const addExpense = useWarikanStore((state) => state.addExpense);
   const removeExpense = useWarikanStore((state) => state.removeExpense);
- 
+  const selectRef = useRef<HTMLSelectElement | null>(null);
+
   return (
     <Card logo="✏️" title="支払い記録">
-      {/* フォーム */}
-      <select
-        className="p-2 border border-gray-300 rounded w-full"
-        value={inputExpense.paidBy}
-        onChange={(e) =>
-          updateInputExpense({ ...inputExpense, paidBy: e.target.value })
-        }
-      >
-        <option value="">支払った人</option>
-        {members.values().map(
-          (member) =>
-            member && (
-              <option key={member} value={member}>
-                {member}
-              </option>
-            )
-        )}
-      </select>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <input
-          placeholder="内容"
-          value={inputExpense.description}
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        addExpense();
+        selectRef.current?.focus();
+      }} className="space-y-4">
+        <select
+          className="p-2 border border-gray-300 rounded w-full"
+          value={inputExpense.paidBy}
           onChange={(e) =>
-            updateInputExpense({ ...inputExpense, description: e.target.value })
+            updateInputExpense({ ...inputExpense, paidBy: e.target.value })
           }
-          className="h-10 px-2 border border-gray-300 rounded"
-        />
-        <input
-          type="number"
-          min={0}
-          placeholder="金額"
-          value={inputExpense.amount.toString() || ""}
-          onChange={(e) =>
-            updateInputExpense({
-              ...inputExpense,
-              amount: BigInt(e.target.value || "0"),
-            })
-          }
-          className="h-10 px-2 border border-gray-300 rounded"
-        />
-      </div>
-      <Button onClick={addExpense} className="w-full">
-        記録する
-      </Button>
- 
+          ref={selectRef}
+        >
+          <option value="">支払った人</option>
+          {members.values().map(
+            (member) =>
+              member && (
+                <option key={member} value={member}>
+                  {member}
+                </option>
+              )
+          )}
+        </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <input
+            placeholder="内容"
+            value={inputExpense.description}
+            onChange={(e) =>
+              updateInputExpense({ ...inputExpense, description: e.target.value })
+            }
+            className="h-10 px-2 border border-gray-300 rounded"
+          />
+          <input
+            type="number"
+            min={0}
+            placeholder="金額"
+            value={inputExpense.amount.toString() || ""}
+            onChange={(e) =>
+              updateInputExpense({
+                ...inputExpense,
+                amount: BigInt(e.target.value || "0"),
+              })
+            }
+            className="h-10 px-2 border border-gray-300 rounded"
+          />
+        </div>
+        <Button className="w-full">
+          記録する
+        </Button>
+      </form>
+
       {/* 支払い一覧 */}
       <div className="space-y-2">
         {expenses.map((expense, i) => (
@@ -80,5 +88,5 @@ const ExpenseList = () => {
     </Card>
   );
 };
- 
+
 export default ExpenseList;
